@@ -39,16 +39,16 @@ const Letter = ({
 		`${darkMode ? "text-white" : "text-black"} bg-[#6AAA64]`
 	} ${
 		variant === "green" &&
-		`${darkMode ? "text-white" : "text-white"} bg-[#6AAA64]`
+		`${darkMode ? "text-white" : "text-white"} bg-[#6AAA64] animate-slide-card`
 	} ${
 		variant === "yellow" &&
 		`${darkMode ? "text-white" : "text-black"} bg-yellow`
 	} ${
 		variant === "yellowgrid" &&
-		`${darkMode ? "text-white" : "text-white"} bg-yellow`
+		`${darkMode ? "text-white" : "text-white"} bg-yellow animate-slide-card`
 	} ${
 		variant === "darkgray" &&
-		`${darkMode ? "text-white" : "text-white"} bg-gray`
+		`${darkMode ? "text-white" : "text-white"} bg-gray animate-slide-card`
 	} ${
 		variant === "lightgray" &&
 		`${darkMode ? "bg-gray/20 text-white" : "bg-gray/30"}`
@@ -60,6 +60,20 @@ const Letter = ({
 				: "bg-lightergray text-lightblack"
 		}`
 	}`;
+
+	const classText = `${
+		variant === "white" && `${darkMode ? "text-white " : "text-black"}`
+	} ${
+		variant === "lightgreen" &&
+		`${darkMode ? "text-white" : "text-black"}  animate-hide-card`
+	} ${variant === "green" && `text-white  animate-hide-card`} ${
+		variant === "yellow" && `${darkMode ? "text-white" : "text-black"}`
+	} ${variant === "yellowgrid" && `text-white animate-hide-card`} ${
+		variant === "darkgray" && `text-white animate-hide-card`
+	} ${variant === "lightgray" && `${darkMode ? "text-white" : "text-black"}`} ${
+		variant === "lightergray" &&
+		`${darkMode ? "text-white" : "text-lightblack"}`
+	}`;
 	const classSize = `${
 		size === "lg"
 			? "w-[38px] h-[38px] sm:w-[76px] sm:h-[76px] font-extrabold text-[18px] sm:text-[35px]"
@@ -67,10 +81,13 @@ const Letter = ({
 	}`;
 	return (
 		<div
-			className={`${classVariant} ${classSize} ${className} flex justify-center items-center rounded-md `}
-			onClick={onClick}
+			className={`${classSize} ${className} relative flex justify-center items-center `}
 		>
-			{children}
+			<div
+				className={`${classVariant} z-0 absolute top-0 lef-0 w-full h-full rounded-md`}
+				onClick={onClick}
+			></div>
+			<div className={`z-10 ${classText}`}>{children}</div>
 		</div>
 	);
 };

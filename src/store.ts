@@ -33,13 +33,18 @@ const uiMiddleware: Middleware<
 		} else if (action.type === "words/setWord") {
 			const result = getState().words.result;
 			if (result === "win" || result === "fail")
-				dispatch({ type: "ui/setShowStatistics", payload: true });
+				setTimeout(
+					() => dispatch({ type: "ui/setShowStatistics", payload: true }),
+					1000
+				);
 		} else if (action.type === "timer/setTime") {
 			const time = getState().timer.time;
 			const error = getState().words.error;
+			const result = getState().words.result;
 			if (time === "00:00" && !error) {
 				dispatch({ type: "words/setNewWord" });
-				dispatch({ type: "ui/setShowStatistics", payload: true });
+				if (result === "fail")
+					dispatch({ type: "ui/setShowStatistics", payload: true });
 			}
 		}
 		return result;

@@ -26,6 +26,40 @@ export interface WordsState {
 	usedLetters: LetterGrid[];
 }
 
+const getStatus = (word: LetterGrid[], wordLooked: string) => {
+	const newWord: LetterGrid[] = new Array(wordLooked.length);
+	const usedLetters: LetterGrid[] = [];
+	wordLooked.split("").forEach((letter, i) => {
+		if (letter === word[i].letter) {
+			wordLooked =
+				wordLooked.substring(0, i) + "?" + wordLooked.substring(i + 1);
+			newWord[i] = {
+				letter: letter,
+				state: "success",
+			};
+			usedLetters.push({ letter: letter, state: "success" });
+		}
+	});
+	word.forEach((letter, i) => {
+		if (wordLooked[i] !== "?") {
+			if (wordLooked.includes(letter.letter)) {
+				newWord[i] = {
+					letter: letter.letter,
+					state: "warning",
+				};
+				usedLetters.push({ letter: letter.letter, state: "warning" });
+			} else {
+				newWord[i] = {
+					letter: letter.letter,
+					state: "error",
+				};
+				usedLetters.push({ letter: letter.letter, state: "error" });
+			}
+		}
+	});
+	return newWord;
+};
+
 // Define the initial state using that type
 const initialState: WordsState = {
 	arrayLetters: [
@@ -75,34 +109,17 @@ export const wordSlice = createSlice({
 		},
 		setWord: (state) => {
 			if (state.currentCol === 5 && state.result === "pending") {
-				let success = 0;
-			state.arrayLetters = state.arrayLetters.map((word, i) =>
-				i === state.currentRow
-					? word.map((letter, j) => {
-							if (letter.letter === state.word[j]) {
-								success += 1;
-								state.usedLetters.push({
-									letter: letter.letter,
-									state: "success",
-								});
-								return { letter: letter.letter, state: "success" };
-							} else if (state.word.includes(letter.letter)) {
-								state.usedLetters.push({
-									letter: letter.letter,
-									state: "warning",
-								});
-								return { letter: letter.letter, state: "warning" };
-							} else {
-								state.usedLetters.push({
-									letter: letter.letter,
-									state: "error",
-								});
-								return { letter: letter.letter, state: "error" };
-							}
-						})
-					: word
+				const wordLooked = state.word;
+				const inputWord = state.arrayLetters[state.currentRow]
+					.map((word) => word.letter)
+					.join("");
+				state.arrayLetters = state.arrayLetters.map((word, i) =>
+					i === state.currentRow ? getStatus(word, wordLooked) : word
 				);
-				if (success === 5) {
+				state.arrayLetters[state.currentRow].forEach((word) =>
+					state.usedLetters.push(word)
+				);
+				if (wordLooked === inputWord) {
 					state.wins += 1;
 					state.played += 1;
 					state.correctWord = null;

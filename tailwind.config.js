@@ -39,6 +39,20 @@ module.exports = {
 				30: ".3",
 				20: ".2",
 			},
+			keyframes: {
+				slide: {
+					"0%": { transform: "rotateX(0deg)" },
+					"100%": { transform: "rotateX(180deg)" },
+				},
+				hide: {
+					"0%": { opacity: "0" },
+					"100%": { opacity: "1" },
+				},
+			},
+			animation: {
+				"slide-card": "slide 1s linear forwards",
+				"hide-card": "hide 1s linear forwards",
+			},
 		},
 	},
 	plugins: [],

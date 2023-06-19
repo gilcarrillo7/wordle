@@ -36,7 +36,8 @@ const uiMiddleware: Middleware<
 				dispatch({ type: "ui/setShowStatistics", payload: true });
 		} else if (action.type === "timer/setTime") {
 			const time = getState().timer.time;
-			if (time === "00:00") {
+			const error = getState().words.error;
+			if (time === "00:00" && !error) {
 				dispatch({ type: "words/setNewWord" });
 				dispatch({ type: "ui/setShowStatistics", payload: true });
 			}

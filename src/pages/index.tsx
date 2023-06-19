@@ -7,7 +7,11 @@ import {
 	selectShowStatistics,
 } from "../features/ui/uiSlice";
 import { selectTime } from "../features/timer/timerSlice";
-import { fetchWords, selectStatus } from "../features/words/wordsSlice";
+import {
+	fetchWords,
+	selectStatus,
+	selectError,
+} from "../features/words/wordsSlice";
 import { setTime } from "../features/timer/timerSlice";
 import HowToPlay from "../components/home/HowToPlay";
 import Statatitics from "../components/home/Statistics";
@@ -23,6 +27,7 @@ const IndexPage: React.FC<PageProps> = () => {
 	const darkMode = useAppSelector(selectDarkMode);
 	const status = useAppSelector(selectStatus);
 	const time = useAppSelector(selectTime);
+	const error = useAppSelector(selectError);
 
 	const getTimeRemaining = React.useCallback((e: string) => {
 		const total = Date.parse(e) - Date.parse(new Date().toString());
@@ -47,7 +52,7 @@ const IndexPage: React.FC<PageProps> = () => {
 			);
 		}
 	}, []);
-	
+
 	const getDeadTime = React.useCallback(() => {
 		const deadline = new Date();
 		deadline.setSeconds(deadline.getSeconds() + 300);
@@ -79,7 +84,15 @@ const IndexPage: React.FC<PageProps> = () => {
 		<main className={`${darkMode ? "bg-darkbg" : "bg-lightbgmain"}`}>
 			<div className="container sm:pt-12 pb-4 sm:pb-24 min-h-screen">
 				<Header />
-				{status === "idle" && (
+				{status === "idle" && error ? (
+					<p
+						className={`${
+							darkMode ? "text-white" : "text-black"
+						} text-4xl my-12 text-center`}
+					>
+						{error}
+					</p>
+				) : (
 					<>
 						<WordleGrid />
 						<Keyboard />

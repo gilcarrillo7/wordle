@@ -78,28 +78,28 @@ export const wordSlice = createSlice({
 				let success = 0;
 				state.arrayLetters = state.arrayLetters.map((word, i) =>
 					i === state.currentRow
-						? word.map((letter, j) => {
-								if (letter.letter === state.word[j]) {
-									success += 1;
-									state.usedLetters.push({
-										letter: letter.letter,
-										state: "success",
-									});
-									return { letter: letter.letter, state: "success" };
-								} else if (state.word.includes(letter.letter)) {
-									state.usedLetters.push({
-										letter: letter.letter,
-										state: "warning",
-									});
-									return { letter: letter.letter, state: "warning" };
-								} else {
-									state.usedLetters.push({
-										letter: letter.letter,
-										state: "error",
-									});
-									return { letter: letter.letter, state: "error" };
-								}
-						  })
+					? word.map((letter, j) => {
+							if (letter.letter === state.word[j]) {
+								success += 1;
+								state.usedLetters.push({
+									letter: letter.letter,
+									state: "success",
+								});
+								return { letter: letter.letter, state: "success" };
+							} else if (state.word.includes(letter.letter)) {
+								state.usedLetters.push({
+									letter: letter.letter,
+									state: "warning",
+								});
+								return { letter: letter.letter, state: "warning" };
+							} else {
+								state.usedLetters.push({
+									letter: letter.letter,
+									state: "error",
+								});
+								return { letter: letter.letter, state: "error" };
+							}
+						})
 						: word
 				);
 				if (success === 5) {
@@ -160,19 +160,23 @@ export const wordSlice = createSlice({
 			state.error = null;
 		});
 		builder.addCase(fetchWords.fulfilled, (state, { payload }) => {
-			const words = payload
-				.split("\n")
-				.filter((word: string) => word.length === 5)
-				.map((word: string) =>
-					word
-						.normalize("NFD")
-						.replace(/[\u0300-\u036f]/g, "")
-						.toUpperCase()
-				);
-			const rnd = Math.floor(Math.random() * words.length);
-			state.word = words[rnd];
-			words.splice(rnd, 1);
-			state.words = words;
+			if (payload === "") state.error = "No se pudo leer archivo";
+			else {
+				const words = payload
+					.split("\n")
+					.filter((word: string) => word.length === 5)
+					.map((word: string) =>
+						word
+							.normalize("NFD")
+							.replace(/[\u0300-\u036f]/g, "")
+							.toUpperCase()
+					);
+				const rnd = Math.floor(Math.random() * words.length);
+				state.word = words[rnd];
+				words.splice(rnd, 1);
+				state.words = words;
+				state.error = null;
+			}
 			state.status = "idle";
 		});
 		builder.addCase(fetchWords.rejected, (state, { payload }) => {
@@ -183,7 +187,7 @@ export const wordSlice = createSlice({
 });
 
 export const fetchWords = createAsyncThunk<
-	any,
+	string,
 	void,
 	{ rejectValue: FetchError }
 >("words", async () => {
@@ -192,10 +196,14 @@ export const fetchWords = createAsyncThunk<
 		{ mode: "no-cors" }
 	);
 	console.log(response);
-	const data = await response.text();
-	console.log("resp:");
-	console.log(data);
-	return data;
+	if (response.ok === true) {
+		const data = await response.text();
+		console.log("resp:");
+		console.log(data);
+		return data;
+	} else {
+		return "";
+	}
 });
 
 export const {
@@ -215,5 +223,6 @@ export const selectWins = (state: RootState) => state.words.wins;
 export const selectPlayed = (state: RootState) => state.words.played;
 export const selectCorrectWord = (state: RootState) => state.words.correctWord;
 export const selectUsedLetters = (state: RootState) => state.words.usedLetters;
+export const selectError = (state: RootState) => state.words.error;
 
 export default wordSlice.reducer;

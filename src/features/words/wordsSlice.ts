@@ -74,10 +74,10 @@ export const wordSlice = createSlice({
 			}
 		},
 		setWord: (state) => {
-			if (state.currentCol === 5) {
+			if (state.currentCol === 5 && state.result === "pending") {
 				let success = 0;
-				state.arrayLetters = state.arrayLetters.map((word, i) =>
-					i === state.currentRow
+			state.arrayLetters = state.arrayLetters.map((word, i) =>
+				i === state.currentRow
 					? word.map((letter, j) => {
 							if (letter.letter === state.word[j]) {
 								success += 1;
@@ -100,7 +100,7 @@ export const wordSlice = createSlice({
 								return { letter: letter.letter, state: "error" };
 							}
 						})
-						: word
+					: word
 				);
 				if (success === 5) {
 					state.wins += 1;
@@ -119,7 +119,7 @@ export const wordSlice = createSlice({
 		},
 		clearLetter: (state) => {
 			const col = state.currentCol === 5 ? 4 : state.currentCol - 1;
-			if (state.currentCol > 0) {
+			if (state.result === "pending" && state.currentCol > 0) {
 				state.arrayLetters = state.arrayLetters.map((word, i) =>
 					word.map((letter, j) =>
 						i === state.currentRow && j === col
@@ -191,15 +191,9 @@ export const fetchWords = createAsyncThunk<
 	void,
 	{ rejectValue: FetchError }
 >("words", async () => {
-	const response = await fetch(
-		`https://gitlab.com/d2945/words/-/raw/main/words.txt`,
-		{ mode: "no-cors" }
-	);
-	console.log(response);
+	const response = await fetch(`assets/words.txt`, { mode: "no-cors" });
 	if (response.ok === true) {
 		const data = await response.text();
-		console.log("resp:");
-		console.log(data);
 		return data;
 	} else {
 		return "";

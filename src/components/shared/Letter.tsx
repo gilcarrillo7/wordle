@@ -82,10 +82,10 @@ const Letter = ({
 	return (
 		<div
 			className={`${classSize} ${className} relative flex justify-center items-center `}
+			onClick={onClick}
 		>
 			<div
 				className={`${classVariant} z-0 absolute top-0 lef-0 w-full h-full rounded-md`}
-				onClick={onClick}
 			></div>
 			<div className={`z-10 ${classText}`}>{children}</div>
 		</div>

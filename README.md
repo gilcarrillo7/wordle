@@ -12,6 +12,8 @@ npm i
 npm run develop
 ```
 
+3. Abrir navegador en *_http://localhost:8000/_*
+
 ## Build
 
 1. Build de la aplicación
@@ -25,3 +27,5 @@ npm run build
 ```console
 npm run serve
 ```
+
+3. Abrir navegador en *_http://localhost:9000/_*

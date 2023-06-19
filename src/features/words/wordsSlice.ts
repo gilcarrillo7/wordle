@@ -105,8 +105,7 @@ export const wordSlice = createSlice({
 				if (success === 5) {
 					state.wins += 1;
 					state.played += 1;
-					// state.currentCol = 0;
-					// state.currentRow = 0;
+					state.correctWord = null;
 					state.result = "win";
 				} else if (state.currentRow === 5) {
 					state.played += 1;
@@ -130,6 +129,29 @@ export const wordSlice = createSlice({
 				);
 				state.currentCol = state.currentCol - 1;
 			}
+		},
+		setNewWord: (state) => {
+			const rnd = Math.floor(Math.random() * state.words.length);
+			const words = state.words;
+			if (state.result === "pending") {
+				state.played += 1;
+				state.correctWord = state.word;
+			}
+			state.result = "pending";
+			state.currentCol = 0;
+			state.currentRow = 0;
+			state.arrayLetters = [
+				Array(5).fill({ letter: "", state: "pending" }),
+				Array(5).fill({ letter: "", state: "pending" }),
+				Array(5).fill({ letter: "", state: "pending" }),
+				Array(5).fill({ letter: "", state: "pending" }),
+				Array(5).fill({ letter: "", state: "pending" }),
+				Array(5).fill({ letter: "", state: "pending" }),
+			];
+			state.usedLetters = [];
+			state.word = words[rnd];
+			words.splice(rnd, 1);
+			state.words = words;
 		},
 	},
 	extraReducers: (builder) => {
@@ -169,7 +191,10 @@ export const fetchWords = createAsyncThunk<
 		`https://gitlab.com/d2945/words/-/raw/main/words.txt`,
 		{ mode: "no-cors" }
 	);
+	console.log(response);
 	const data = await response.text();
+	console.log("resp:");
+	console.log(data);
 	return data;
 });
 

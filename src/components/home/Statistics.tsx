@@ -6,6 +6,7 @@ import {
 	selectWins,
 	selectCorrectWord,
 } from "../../features/words/wordsSlice";
+import { selectTime } from "../../features/timer/timerSlice";
 import Modal from "../shared/Modal";
 import Button from "../shared/Button";
 
@@ -14,6 +15,7 @@ const Statatitics = () => {
 	const wins = useAppSelector(selectWins);
 	const played = useAppSelector(selectPlayed);
 	const correctWord = useAppSelector(selectCorrectWord);
+	const time = useAppSelector(selectTime);
 
 	const handleClose = () => {
 		dispatch(setShowStatistics(false));
@@ -47,7 +49,7 @@ const Statatitics = () => {
 				)}
 				<div className="flex flex-col items-center">
 					<p className="mb-6 text-[19px] leading-[22px]">SIGUIENTE PALABRA</p>
-					<p className="text-[24px] leading-[28px] font-bold">04:10</p>
+					<p className="text-[24px] leading-[28px] font-bold">{time}</p>
 				</div>
 				<div className="text-center mt-12">
 					<Button className="" onClick={handleClose}>

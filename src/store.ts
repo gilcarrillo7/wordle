@@ -9,15 +9,17 @@ import { ThunkAction } from "redux-thunk";
 
 import uiReducer, { UiState } from "./features/ui/uiSlice";
 import wordReducer, { WordsState } from "./features/words/wordsSlice";
+import timerReducer, { TimerState } from "./features/timer/timerSlice";
 
 const rootReducer = combineReducers({
 	ui: uiReducer,
 	words: wordReducer,
+	timer: timerReducer,
 });
 
 const uiMiddleware: Middleware<
-	{},
-	CombinedState<{ ui: UiState; words: WordsState }>
+	void,
+	CombinedState<{ ui: UiState; words: WordsState; timer: TimerState }>
 > =
 	({ getState, dispatch }) =>
 	(next) =>
@@ -32,6 +34,12 @@ const uiMiddleware: Middleware<
 			const result = getState().words.result;
 			if (result === "win" || result === "fail")
 				dispatch({ type: "ui/setShowStatistics", payload: true });
+		} else if (action.type === "timer/setTime") {
+			const time = getState().timer.time;
+			if (time === "00:00") {
+				dispatch({ type: "words/setNewWord" });
+				dispatch({ type: "ui/setShowStatistics", payload: true });
+			}
 		}
 		return result;
 	};

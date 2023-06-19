@@ -113,7 +113,6 @@ const Keyboard = () => {
 			className={`w-full p-2 sm:p-4 ${
 				darkMode ? "bg-darktext/3" : "bg-darktext/30"
 			}`}
-			onKeyDown={(e) => console.log(e)}
 		>
 			<div className="flex gap-1 sm:gap-2 pl-2 sm:pl-8">
 				{firstRow.map((letter, i) => (

@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 
-import WordsFile from "../../assets/words.txt";
-
 type FetchError = {
 	message: string;
 };
@@ -167,7 +165,10 @@ export const fetchWords = createAsyncThunk<
 	void,
 	{ rejectValue: FetchError }
 >("words", async () => {
-	const response = await fetch(`../../assets/words.txt`, { mode: "no-cors" });
+	const response = await fetch(
+		`https://gitlab.com/d2945/words/-/raw/main/words.txt`,
+		{ mode: "no-cors" }
+	);
 	const data = await response.text();
 	return data;
 });

@@ -98,7 +98,7 @@ const Keyboard = () => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Enter") enterWord();
 			else if (e.key === "Backspace") clearLast();
-			else if (/^[a-zA-Z]*$/.test(e.key)) handleLetter(e.key.toUpperCase());
+			else if (/^[a-zA-Z]$/.test(e.key)) handleLetter(e.key.toUpperCase());
 		};
 
 		document.addEventListener("keydown", handleKeyDown);
